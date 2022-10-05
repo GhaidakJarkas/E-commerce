@@ -1,7 +1,7 @@
 var updateBtns = document.getElementsByClassName("update-cart");
-debugger
+
 for(var i=0; i < updateBtns.length; i++){
-    debugger
+    
     updateBtns[i].addEventListener("click", function(){
         var productID = this.dataset.product;
         var action = this.dataset.action;
@@ -9,11 +9,33 @@ for(var i=0; i < updateBtns.length; i++){
 
         console.log('User: ', user)
         if(user === "AnonymousUser"){
-            console.log("User in not logged in")
+            addCookieItem(productID, action);
         }else{
             updateUserOrder(productID, action)
         }
     });
+}
+
+function addCookieItem(productID, action){
+    console.log("User in not logged in");
+    if(action == 'add'){
+        if(cart[productID] == undefined){
+            cart[productID] = {'quantity':1};
+        }else{
+            cart[productID]['quantity'] += 1;
+        }
+    }
+
+    if(action == 'remove'){
+        cart[productID]['quantity'] -= 1;
+        if(cart[productID]['quantity'] <= 0){
+            console.log('Remove item')
+            delete cart[productID]
+        }
+    }
+
+    document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/";
+    location.reload();
 }
 
 function updateUserOrder(productID, action){
